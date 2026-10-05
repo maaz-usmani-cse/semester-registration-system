@@ -1,0 +1,60 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+
+
+<section class="card shadow-sm w-100" style="max-width: 440px;">
+    <h5 class="card-header text-center bg-light m-0 fw-bold">Exam Form</h5>
+    
+    <form action="{% url 'fill_exam_form' %}" method="POST" class="card-body p-4" novalidate>
+        {% csrf_token %}
+        
+        <div class="mb-2">
+    <label class="form-label fw-semibold small m-0">Name</label>
+    <input type="text" name="name" class="form-control form-control-sm" placeholder="Enter your name" required>
+</div>
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Enrollment No</label>
+            <input type="text" name="enrollment" class="form-control form-control-sm" placeholder="Enter Enrollment" required>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Semester</label>
+            <select name="semester" class="form-select form-select-sm" required>
+                <option value="" selected disabled>Select Semester</option>
+                {% for key, val in semesters %}
+                    <option value="{{ key }}">{{ val }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Year</label>
+            <select name="year" class="form-select form-select-sm" required>
+                <option value="" selected disabled>Select Year</option>
+                {% for key, val in years %}
+                    <option value="{{ key }}">{{ val }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Subject</label>
+            <input type="text" name="subject" class="form-control form-control-sm" placeholder="Enter Subject" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold small m-0">Exam Type</label>
+            <select name="exam_type" class="form-select form-select-sm" required>
+                <option value="Regular">Regular</option>
+                <option value="Ex/Backlog">Ex / Backlog</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 btn-sm fw-bold">Submit</button>
+    </form>
+</section>
+
+
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<section class="card shadow-sm w-100 border-0">
+    <!-- Header Section with Search Bar -->
+    <div class="card-header bg-light d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 py-3">
+        <h5 class="m-0 fw-bold text-dark">Submitted Form Details</h5>
+
+       
+        <form method="GET" action="{% url 'show_details' %}" class="d-flex align-items-center gap-2">
+            <div class="input-group input-group-sm">
+                <input type="text" 
+                       name="search" 
+                      12qwadsasd++
+                       class="form-control" 
+                       placeholder="Search Name, Subject, etc..." 
+                       aria-label="Search">
+                
+                <button type="submit" class="btn btn-primary fw-bold">
+                    🔍 Search
+                </button>
+            </div>
+
+            
+            {% if search_query %}
+                <a href="{% url 'show_details' %}" class="btn btn-outline-secondary btn-sm text-nowrap" title="Clear Search">
+                    ✖ Clear
+                </a>
+            {% endif %}
+        </form>
+    </div>
+
+    {% if search_query %}
+        <div class="bg-primary-subtle text-primary border-bottom px-3 py-2 small d-flex justify-content-between align-items-center">
+            <span>
+                🔍 Showing results for: <strong>"{{ search_query }}"</strong> 
+                <span class="badge bg-primary ms-1">{{ forms_data|length }} found</span>
+            </span>
+            <a href="{% url 'show_details' %}" class="text-primary text-decoration-none fw-bold small">Show All</a>
+        </div>
+    {% endif %}
+
+    <div class="card-body p-0">
+        {% if forms_data %}
+            <div class="table-responsive">
+                <table class="table table-striped align-middle text-center m-0">
+                    <thead class="table-dark text-nowrap">
+                        <tr>
+                            <th>Name</th>
+                            <th>Enrollment</th>
+                            <th>Semester</th>
+                            <th>Year</th>
+                            <th>Subject</th>
+                            <th>Exam Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-nowrap">
+                        {% for item in forms_data %}
+                            <tr>
+                                <td class="fw-semibold">{{ item.name }}</td>
+                                <td>{{ item.enrollment_no }}</td>
+                                <td>{{ item.get_semester_display }}</td>
+                                <td>{{ item.get_year_display }}</td>
+                                <td>{{ item.subject }}</td>
+                                <td>
+                                    <span class="badge {% if item.exam_type == 'Regular' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                                        {{ item.exam_type }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center gap-1 flex-nowrap">
+                                        <a href="{% url 'edit_exam_form' item.id %}" class="btn btn-warning btn-sm fw-semibold">
+                                            ✏️ Edit
+                                        </a>
+
+                                        <a href="{% url 'delete_exam_form' item.id %}" 
+                                           class="btn btn-danger btn-sm fw-semibold"
+                                           onclick="return confirm('Kya aap sach me delete karna chahte hain?');">
+                                            🗑️ Delete
+                                        </a>
+
+                                        <a href="{% url 'download_exam_form' item.id %}" target="_blank" class="btn btn-info btn-sm fw-semibold text-white">
+                                            📄 Download
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+           
+            <div class="p-5 text-center">
+                {% if search_query %}
+                    <h6 class="text-muted mb-2">❌ "<strong>{{ search_query }}</strong>" se matching koi record nahi mila.</h6>
+                    <a href="{% url 'show_details' %}" class="btn btn-sm btn-outline-primary mt-2">Sabhi Forms Dekhein</a>
+                {% else %}
+                    <p class="text-muted m-0">No forms submitted yet. Click "Fill Exam Form" to create one.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

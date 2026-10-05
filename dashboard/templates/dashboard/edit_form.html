@@ -1,0 +1,69 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<section class="card shadow-sm w-100" style="max-width: 440px;">
+    <h5 class="card-header text-center bg-warning text-dark m-0 fw-bold">Edit Exam Form</h5>
+    
+    <!-- Action me 'edit_exam_form' aur form.id bhej rahe hain -->
+    <form action="{% url 'edit_exam_form' form.id %}" method="POST" class="card-body p-4" novalidate>
+        {% csrf_token %}
+        
+        <!-- Name -->
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Name</label>
+            <input type="text" name="name" value="{{ form.name }}" class="form-control form-control-sm" placeholder="Enter your name" required>
+        </div>
+
+        <!-- Enrollment No -->
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Enrollment No</label>
+            <input type="text" name="enrollment" value="{{ form.enrollment_no }}" class="form-control form-control-sm" placeholder="Enter Enrollment" required>
+        </div>
+
+        <!-- Semester Dropdown (Pre-selected Check) -->
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Semester</label>
+            <select name="semester" class="form-select form-select-sm" required>
+                <option value="" disabled>Select Semester</option>
+                {% for key, val in semesters %}
+                    <option value="{{ key }}" {% if form.semester == key %}selected{% endif %}>
+                        {{ val }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Year Dropdown (Pre-selected Check) -->
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Year</label>
+            <select name="year" class="form-select form-select-sm" required>
+                <option value="" disabled>Select Year</option>
+                {% for key, val in years %}
+                    <option value="{{ key }}" {% if form.year == key %}selected{% endif %}>
+                        {{ val }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Subject -->
+        <div class="mb-2">
+            <label class="form-label fw-semibold small m-0">Subject</label>
+            <input type="text" name="subject" value="{{ form.subject }}" class="form-control form-control-sm" placeholder="Enter Subject" required>
+        </div>
+
+        <!-- Exam Type Dropdown -->
+        <div class="mb-3">
+            <label class="form-label fw-semibold small m-0">Exam Type</label>
+            <select name="exam_type" class="form-select form-select-sm" required>
+                <option value="Regular" {% if form.exam_type == 'Regular' %}selected{% endif %}>Regular</option>
+                <option value="Ex/Backlog" {% if form.exam_type == 'Ex/Backlog' %}selected{% endif %}>Ex / Backlog</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-warning w-100 btn-sm fw-bold">Update Changes</button>
+    </form>
+</section>
+
+{% endblock %}
