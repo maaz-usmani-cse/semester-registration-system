@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Ye line add karein
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -118,6 +119,7 @@ import os
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 
@@ -144,4 +146,26 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')    # Yahan Gmail ka 16-digit App P
 
 
 
-SESSION_COOKIE_AGE = 315360000  # 10 Years Lifespan
+SESSION_COOKIE_AGE = 315360000  # 10 Years Lifespan 
+
+
+
+
+
+
+
+# Render par RENDER env variable pehle se True hota hai
+RENDER = os.getenv('RENDER')
+
+if RENDER:
+    # Production (Render) par DEBUG band rahega
+    DEBUG = False
+    # Sirf Render ka domain aur localhost allow honge
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+    if RENDER_EXTERNAL_HOSTNAME:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+else:
+    # Local laptop par DEBUG chalu rahega
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
