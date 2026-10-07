@@ -8,7 +8,8 @@ from django.conf import settings
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q  
 from .models import UserProfile
-
+import os
+import resend 
 
 def is_password_strong(password):
     digit = any(i.isdigit() for i in password)
@@ -81,20 +82,20 @@ def signup_view(request):
                     is_verified=False
                 )
                 
-                send_mail(
-                    "Verify Your Account",
-                    f"Bhai, aapka OTP hai: {otp_code}. Ye sirf 5 minute tak valid hai.",
-                    settings.EMAIL_HOST_USER,
-                    [email],
-                    fail_silently=True
-                )
+                resend.api_key = os.environ.get('RESEND_API_KEY')
+
+                resend.Emails.send({
+                    "from": "Semester Registration <onboarding@resend.dev>",
+                    "to": [email],
+                    "subject": "Verify Your Account",
+                    "text": "Bhai, aapka OTP hai: " + str(otp_code) + ". Ye sirf 5 minute tak valid hai.",
+                })
                 
                 request.session['pre_verified_username'] = username
                 return redirect('verify_otp')
                 
         except Exception:
             return render(request, 'signup.html', {'error': 'Technical error! Email ya data save nahi ho paya.'})
-
     return render(request, 'signup.html')
 
 
@@ -173,23 +174,20 @@ def resend_otp_view(request):
     profile.save()
     
     try:
-        send_mail(
-            "Resend: Verify Your Account",
-            f"Bhai, aapka naya OTP hai: {new_otp}. Ye bhi sirf 5 minute tak valid hai.",
-            settings.EMAIL_HOST_USER,
-            [profile.email],
-            fail_silently=True
-        )
-        # Dynamic success notification for standard alert rendering
-        messages.success(request, 'Naya OTP aapke email par bhej diya gaya hai!')
-        return redirect('verify_otp')
-        
+                resend.api_key = os.environ.get('RESEND_API_KEY')
+
+                resend.Emails.send({
+                    "from": "Semester Registration <onboarding@resend.dev>",
+                    "to": [profile.email],
+                    "subject": "Verify Your Account",
+                    "text": "Bhai, aapka OTP hai: " + str(new_otp) + ". Ye sirf 5 minute tak valid hai.",
+                })
+                
+                request.session['pre_verified_username'] = username
+                return redirect('verify_otp')
+                
     except Exception:
-        messages.error(request, 'Mail server error! Naya OTP nahi bhej paye.')
-        return redirect('verify_otp')
-
-
-
+            return render(request, 'signup.html', {'error': 'Technical error! Email ya data save nahi ho paya.'})
 
 def login_view(request):
     if request.method == 'POST':
@@ -282,18 +280,20 @@ def forgot_password_view(request):
         profile.save()
         
         try:
-            send_mail(
-                "Reset Your Password",
-                f"Aapka OTP hai: {reset_otp}",
-                settings.EMAIL_HOST_USER,
-                [email_input],
-                fail_silently=True
-            )
-            request.session['reset_email'] = email_input
-            return redirect('reset')
-        except Exception:
-            return render(request, 'forgot_password.html', {'error': 'Mail send error.'})
+                resend.api_key = os.environ.get('RESEND_API_KEY')
 
+                resend.Emails.send({
+                    "from": "Semester Registration <onboarding@resend.dev>",
+                    "to": [email_input],
+                    "subject": "Verify Your Account",
+                    "text": "Bhai, aapka OTP hai: " + str(reset_otp) + ". Ye sirf 5 minute tak valid hai.",
+                })
+                
+                request.session['reset_email'] = email_input
+                return redirect('verify_otp')
+                
+        except Exception:
+            return render(request, 'signup.html', {'error': 'Technical error! Email ya data save nahi ho paya.'})
     
     return render(request, 'forgot_password.html')
 
@@ -374,17 +374,19 @@ def resend_forgot_password_otp_view(request):
     profile.save()
 
     try:
-        send_mail(
-            "Resend: Reset Your Password",
-            f"Aapka naya OTP hai: {new_otp}",
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=True
-        )
-        messages.success(request, 'Naya OTP email par bhej diya gaya hai!')
-    except Exception:
-        messages.error(request, 'Mail server issue! OTP nahi gaya.')
+                resend.api_key = os.environ.get('RESEND_API_KEY')
 
+                resend.Emails.send({
+                    "from": "Semester Registration <onboarding@resend.dev>",
+                    "to": [email],
+                    "subject": "Verify Your Account",
+                    "text": "Bhai, aapka OTP hai: " + str(new_otp) + ". Ye sirf 5 minute tak valid hai.",
+                })
+                
+                return redirect('verify_otp')
+                
+    except Exception:
+            return render(request, 'signup.html', {'error': 'Technical error! Email ya data save nahi ho paya.'})
     return redirect('reset')
 
 
