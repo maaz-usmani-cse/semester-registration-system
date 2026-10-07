@@ -169,3 +169,16 @@ else:
     # Local laptop par DEBUG chalu rahega
     DEBUG = True
     ALLOWED_HOSTS = ['*']
+
+
+
+
+
+
+# Email atakne par website crash na ho
+EMAIL_TIMEOUT = 10
+
+# Render domain security
+CSRF_TRUSTED_ORIGINS = [
+    'https://semester-registration-system.onrender.com',
+]
