@@ -86,7 +86,7 @@ def signup_view(request):
                     f"Bhai, aapka OTP hai: {otp_code}. Ye sirf 5 minute tak valid hai.",
                     settings.EMAIL_HOST_USER,
                     [email],
-                    fail_silently=False
+                    fail_silently=True
                 )
                 
                 request.session['pre_verified_username'] = username
@@ -178,7 +178,7 @@ def resend_otp_view(request):
             f"Bhai, aapka naya OTP hai: {new_otp}. Ye bhi sirf 5 minute tak valid hai.",
             settings.EMAIL_HOST_USER,
             [profile.email],
-            fail_silently=False
+            fail_silently=True
         )
         # Dynamic success notification for standard alert rendering
         messages.success(request, 'Naya OTP aapke email par bhej diya gaya hai!')
@@ -287,7 +287,7 @@ def forgot_password_view(request):
                 f"Aapka OTP hai: {reset_otp}",
                 settings.EMAIL_HOST_USER,
                 [email_input],
-                fail_silently=False
+                fail_silently=True
             )
             request.session['reset_email'] = email_input
             return redirect('reset')
@@ -379,7 +379,7 @@ def resend_forgot_password_otp_view(request):
             f"Aapka naya OTP hai: {new_otp}",
             settings.EMAIL_HOST_USER,
             [email],
-            fail_silently=False
+            fail_silently=True
         )
         messages.success(request, 'Naya OTP email par bhej diya gaya hai!')
     except Exception:
