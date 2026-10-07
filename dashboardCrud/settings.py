@@ -134,16 +134,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# ==========================================
-# REAL SMTP EMAIL CONFIGURATION ENGINE
+# ===========# ==========================================
+# REAL SMTP EMAIL CONFIGURATION ENGINE (SSL)
 # ==========================================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'                 # Gmail ka standard SMTP server
-EMAIL_PORT = 587                              # TLS security port
-EMAIL_USE_TLS = True                          # Strict Security Protocol TLS Enable
-EMAIL_HOST_USER = os.getenv('EMAIL_USER')      # Yahan tumhara real Gmail ID aayega
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')    # Yahan Gmail ka 16-digit App Password aayega
-
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = os.getenv('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASS')
+EMAIL_TIMEOUT = 10
 
 
 SESSION_COOKIE_AGE = 315360000  # 10 Years Lifespan 
@@ -175,8 +176,7 @@ else:
 
 
 
-# Email atakne par website crash na ho
-EMAIL_TIMEOUT = 10
+
 
 # Render domain security
 CSRF_TRUSTED_ORIGINS = [
