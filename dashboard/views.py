@@ -219,18 +219,3 @@ def download_exam_form_view(req,form_id):
    
 
 
-
-
-from django.http import HttpResponse
-from django.contrib.auth import get_user_model
-
-def create_admin_account(request):
-    User = get_user_model()
-    username = "admin"
-    email = "admin@gmail.com"
-    password = "AdminPassword@123"  # jo password rakhna ho
-    
-    if not User.objects.filter(username=username).exists():
-        User.objects.create_superuser(username=username, email=email, password=password)
-        return HttpResponse("Superuser successfully create ho gaya hai!")
-    return HttpResponse("Superuser pehle se bana hua hai!")
